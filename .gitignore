@@ -132,3 +132,6 @@ dist
 
 # pnpm
 .pnpm-store
+
+# prisma
+app/prisma/dev.*
