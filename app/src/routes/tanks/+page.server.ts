@@ -1,6 +1,12 @@
 import prisma from "../../lib/prisma";
 import type { Actions } from "./$types";
 
+import { z } from "zod";
+
+const formDataSchema = z.object({
+  name: z.string(),
+});
+
 export async function load() {
   const tanks = await prisma.tank.findMany();
 
@@ -9,8 +15,7 @@ export async function load() {
 
 export const actions: Actions = {
   default: async ({ request }) => {
-    const formData = await request.formData();
-    const name = formData.get("name").toString();
+    const { name } = formDataSchema.parse(await request.formData());
 
     const tank = await prisma.tank.create({
       data: {
@@ -21,11 +26,3 @@ export const actions: Actions = {
     return tank;
   },
 };
-
-// export async function PUT({ params, request, cookies }) {
-// 	const { done } = await request.json();
-// 	const userid = cookies.get('userid');
-
-// 	await database.toggleTodo({ userid, id: params.id, done });
-// 	return new Response(null, { status: 204 });
-// }
